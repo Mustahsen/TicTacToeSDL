@@ -59,6 +59,14 @@ Graph::~Graph(){
     delete SCREEN_WIDTH;
 }
 
+int Graph::getScreenWidth(){
+    return *SCREEN_WIDTH;
+}
+
+int Graph::getScreenHeight(){
+    return *SCREEN_HEIGHT;
+}
+
 void Graph::loadTexture(std::string path){
 
     SDL_Surface *loadedSurface = IMG_Load(path.c_str());
@@ -152,9 +160,62 @@ void Graph::pickSide(){
     }
 }
 
-void Graph::renderGameScreen(){
+void Graph::renderGameScreen(Board inputBoard){
+
+
+    SDL_SetRenderDrawColor(gRenderer, 0xCC, 0xCC, 0xCC, 0xFF);
+    SDL_RenderClear(gRenderer);
+
+    //Rendering 4 vertical lines for separating the screen
+    SDL_GetWindowSize(gWindow, SCREEN_WIDTH, SCREEN_HEIGHT);
+    SDL_SetRenderDrawColor( gRenderer, 0x00, 0x00, 0x00, 0xFF );
+
+    SDL_Rect verticalLine1 = {(*SCREEN_WIDTH - 10) / 3, 0, 5, *SCREEN_HEIGHT};
+    SDL_RenderFillRect( gRenderer, &verticalLine1);
+    SDL_Rect verticalLine2 = {(*SCREEN_WIDTH - 10) / 3 * 2, 0, 5, *SCREEN_HEIGHT};
+    SDL_RenderFillRect( gRenderer, &verticalLine2);
+    SDL_Rect horizontalLine1 = {0, (*SCREEN_HEIGHT - 10) / 3, *SCREEN_WIDTH, 5};
+    SDL_RenderFillRect( gRenderer, &horizontalLine1);
+    SDL_Rect horizontalLine2 = {0, (*SCREEN_HEIGHT - 10) / 3 * 2, *SCREEN_WIDTH, 5};
+    SDL_RenderFillRect( gRenderer, &horizontalLine2);
+
+    std::vector<char> tempVector = inputBoard.getAllSlotStates();
+    for (int i = 0; i < 9; i++){
+        if (tempVector[i] == 'e') continue;
+        SDL_Rect dRect = {(i/3*(*SCREEN_WIDTH-10)/3) + 5*i/3, ((i%3)*(*SCREEN_HEIGHT-10)/3) + 5*(i%3), (*SCREEN_WIDTH-10)/3, (*SCREEN_HEIGHT-10)/3};
+        if (tempVector[i] == 'x'){
+            SDL_RenderCopy(gRenderer, gTexture, &xRect, &dRect);
+        }else SDL_RenderCopy(gRenderer, gTexture, &oRect, &dRect);
+    }
+
+    SDL_RenderPresent(gRenderer);
+}
+
+void Graph::renderWinScreen(){
+    SDL_SetRenderDrawColor(gRenderer, 0xCC, 0xCC, 0xCC, 0xFF);
+    SDL_RenderClear(gRenderer);
+    SDL_GetWindowSize(gWindow, SCREEN_WIDTH, SCREEN_HEIGHT);
+    SDL_RenderCopy(gRenderer, winTexture, NULL, &textDestRect);
+    SDL_RenderPresent(gRenderer);
 
 }
 
+void Graph::renderDrawScreen(){
+    SDL_SetRenderDrawColor(gRenderer, 0xCC, 0xCC, 0xCC, 0xFF);
+    SDL_RenderClear(gRenderer);
+    SDL_GetWindowSize(gWindow, SCREEN_WIDTH, SCREEN_HEIGHT);
+    SDL_RenderCopy(gRenderer, drawTexture, NULL, &textDestRect);
+    SDL_RenderPresent(gRenderer);
+
+}
+
+void Graph::renderLostScreen(){
+    SDL_SetRenderDrawColor(gRenderer, 0xCC, 0xCC, 0xCC, 0xFF);
+    SDL_RenderClear(gRenderer);
+    SDL_GetWindowSize(gWindow, SCREEN_WIDTH, SCREEN_HEIGHT);
+    SDL_RenderCopy(gRenderer, lostTexture, NULL, &textDestRect);
+    SDL_RenderPresent(gRenderer);
+
+}
 
 

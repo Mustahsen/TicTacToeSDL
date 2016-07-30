@@ -8,6 +8,8 @@
 #include <string>
 #include <iostream>
 
+#include "Board.h"
+
 
 class Graph {
 
@@ -57,6 +59,9 @@ public:
     Graph();
     ~Graph();
 
+    int getScreenWidth();
+    int getScreenHeight();
+
     void loadTexture(std::string path);
     void loadTextTexture();
 
@@ -65,7 +70,10 @@ public:
     void renderStartScreen();
     void pickSide();
 
-    void renderGameScreen();
+    void renderGameScreen(Board inputBoard);
+    void renderWinScreen();
+    void renderDrawScreen();
+    void renderLostScreen();
 
 
 
